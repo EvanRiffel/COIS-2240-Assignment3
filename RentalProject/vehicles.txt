@@ -1,0 +1,3 @@
+| AAA111 | Corolla | null | 2019 | AVAILABLE | Seats: 4
+| BBB222 | Civic | null | 2021 | AVAILABLE | Seats: 4
+| CCC333 | Focus | null | 2024 | AVAILABLE | Seats: 4
