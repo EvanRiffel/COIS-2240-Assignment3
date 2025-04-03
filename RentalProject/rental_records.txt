@@ -1,1 +1,2 @@
-RENT | Plate: 123456 | Customer:  | Date: 2025-04-02 | Amount: $50.0RETURN | Plate: 123456 | Customer:  | Date: 2025-04-02 | Amount: $50.0
+RENT | Plate: 7904638 | Customer: evan | Date: 2025-04-03 | Amount: $100.0
+RETURN | Plate: 7904638 | Customer: evan | Date: 2025-04-03 | Amount: $100.0

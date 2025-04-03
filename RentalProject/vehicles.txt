@@ -1,7 +1,5 @@
-| 123456 | Honda | Civic | 2016 | AVAILABLE | | Seats: 4| 987654 | Toyota | Corolla | 2020 | AVAILABLE | | Sidecar: No| EYE656 | Honda | Eleven | 1999 | AVAILABLE | | Seats: 4| 1234567890 | Wer | Wer | 2016 | AVAILABLE | | Seats: 4| 123 | Honda | Civic | 2010 | AVAILABLE | 
- | Seats: 4
-| 789 | Toyota | Corrola | 2022 | AVAILABLE | 
- | Seats: 4
-| 123 | Honda | Civic | 2014 | AVAILABLE |  | Seats: 4
-| 456 | Toyota | Corolla | 2013 | AVAILABLE |  | Seats: 4
-| 1234 | Honda | Civic | 2016 | AVAILABLE |  | Seats: 5
+| 123456 | Honda | Civic | 2016 | AVAILABLE | Seats: 4
+| 7904638 | Honda | Crv | 2011 | AVAILABLE | Seats: 4
+| 97765 | Honda | Mazda | 2011 | AVAILABLE | Seats: 4
+| 3412676453 | Mazda | Crv | 2013 | AVAILABLE | Sidecar: Yes
+| 1244367164 | Toyota | Corolla | 2020 | AVAILABLE | Cargo Capacity: 1500.0
