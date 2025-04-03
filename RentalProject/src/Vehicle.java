@@ -10,18 +10,22 @@ public abstract class Vehicle {
     public Vehicle(String make, String model, int year) {
     	if (make == null || make.isEmpty())
     		this.make = null;
-    	else
-    		this.make = make.substring(0, 1).toUpperCase() + make.substring(1).toLowerCase();
+		else
+			capitalize(make);
     	
     	if (model == null || model.isEmpty())
     		this.model = null;
     	else
-    		this.model = model.substring(0, 1).toUpperCase() + model.substring(1).toLowerCase();
+    		capitalize(model);
     	
         this.year = year;
         this.status = VehicleStatus.AVAILABLE;
         this.licensePlate = null;
     }
+
+	private void capitalize(String input) {
+		this.make = input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
+	}
 
     public Vehicle() {
         this(null, null, 0);

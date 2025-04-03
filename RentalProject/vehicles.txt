@@ -1,5 +1,0 @@
-| 123456 | Honda | Civic | 2016 | AVAILABLE | Seats: 4
-| 7904638 | Honda | Crv | 2011 | AVAILABLE | Seats: 4
-| 97765 | Honda | Mazda | 2011 | AVAILABLE | Seats: 4
-| 3412676453 | Mazda | Crv | 2013 | AVAILABLE | Sidecar: Yes
-| 1244367164 | Toyota | Corolla | 2020 | AVAILABLE | Cargo Capacity: 1500.0

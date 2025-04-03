@@ -1,6 +1,0 @@
-
-Customer ID: 1234 | Name: 
-Customer ID: 12 | Name: 
-Customer ID: 12345 | Name: 
-Customer ID: 1 | Name: 
-Customer ID: 12 | Name: evan
