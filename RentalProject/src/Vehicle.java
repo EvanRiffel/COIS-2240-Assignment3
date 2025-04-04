@@ -11,20 +11,20 @@ public abstract class Vehicle {
     	if (make == null || make.isEmpty())
     		this.make = null;
 		else
-			capitalize(make);
+			this.make = capitalize(make);
     	
     	if (model == null || model.isEmpty())
     		this.model = null;
     	else
-    		capitalize(model);
+    		this.model = capitalize(model);
     	
         this.year = year;
         this.status = VehicleStatus.AVAILABLE;
         this.licensePlate = null;
     }
 
-	private void capitalize(String input) {
-		this.make = input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
+	private String capitalize(String input) {
+		return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
 	}
 
     public Vehicle() {
@@ -33,7 +33,7 @@ public abstract class Vehicle {
 
     public void setLicensePlate(String plate) {
         this.licensePlate = plate == null ? null : plate.toUpperCase();
-    }
+}
 
     public void setStatus(VehicleStatus status) {
     	this.status = status;
