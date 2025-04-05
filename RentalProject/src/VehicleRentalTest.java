@@ -1,5 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,5 +60,41 @@ class VehicleRentalTest {
     }
 
     
-    // part 2----------------------------------------
+    // part 2---------------------------------------- 
+    
+    
+    private Vehicle vehicle;
+    private Customer customer;
+    private RentalSystem rentalSystem;
+    
+    @BeforeEach
+    public void setUp2() {
+    	vehicle = new Car("Toyota", "Corolla", 2020, 5);
+    	customer = new Customer(1, "John Doe");
+        rentalSystem = RentalSystem.getInstance();
+
+    }
+    
+    @Test
+    public void testRentandReturnVehicle() {
+    	
+    	assertEquals(Vehicle.VehicleStatus.AVAILABLE, vehicle.getStatus());
+
+    	assertTrue(rentalSystem.rentVehicle(vehicle, customer, LocalDate.now(), 100.0));
+    	assertEquals(Vehicle.VehicleStatus.RENTED, vehicle.getStatus());
+    	
+    	assertFalse(rentalSystem.rentVehicle(vehicle, customer, LocalDate.now(), 100.0));
+
+    	assertTrue(rentalSystem.returnVehicle(vehicle, customer, LocalDate.now(), 20.0));
+    	assertEquals(Vehicle.VehicleStatus.AVAILABLE, vehicle.getStatus());
+    	
+    	assertFalse(rentalSystem.returnVehicle(vehicle, customer, LocalDate.now(), 20.0));
+    	
+
+    }
+    
+    
+    // part 3 -----------------------------------------------
+    
+    
 }
