@@ -1,4 +1,4 @@
-// libraries imported
+package application;
 import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 
 
 public class RentalSystem {
-	// creation of lists for type Vehicle Customer and instantiate RentalHistory object
     private List<Vehicle> vehicles = new ArrayList<>();
     private List<Customer> customers = new ArrayList<>();
     private RentalHistory rentalHistory = new RentalHistory();
