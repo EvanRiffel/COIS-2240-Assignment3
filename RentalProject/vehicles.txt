@@ -1,5 +1,2 @@
-| AAA111 | Corolla | null | 2019 | AVAILABLE | Seats: 4
-| BBB222 | Civic | null | 2021 | AVAILABLE | Seats: 4
-| CCC333 | Focus | null | 2024 | AVAILABLE | Seats: 4
-123456 | Crv | null | 2024 | AVAILABLE | Seats: 4
-123456789 | Honda | Civic | 2020 | AVAILABLE | Seats: 4
+EEE333 | Honda  | Civic | 2021 | AVAILABLE | Seats: 4
+EEE444 | Toyota | Corolla | 2020 | AVAILABLE | Seats: 4

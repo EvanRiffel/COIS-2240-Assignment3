@@ -20,6 +20,9 @@ public class VehicleRentalApp {
 
                     System.out.print("Enter license plate: ");
                     String plate = scanner.nextLine().toUpperCase();
+                    
+                    
+                    
                     System.out.print("Enter make: ");
                     String make = scanner.nextLine();
                     System.out.print("Enter model: ");
@@ -33,25 +36,31 @@ public class VehicleRentalApp {
                         System.out.print("Enter number of seats: ");
                         int seats = scanner.nextInt();
                         vehicle = new Car(make, model, year, seats);
-                        System.out.println("Car added successfuly.");
+                        //System.out.println("Car added successfuly.");
                     } else if (type == 2) {
                         System.out.print("Has sidecar? (true/false): ");
                         boolean sidecar = scanner.nextBoolean();
                         vehicle = new Motorcycle(make, model, year, sidecar);
-                        System.out.print("Motorcycle added successfuly.");
+                        //System.out.print("Motorcycle added successfuly.");
 		            } else if (type == 3) {
 		                System.out.print("Enter the cargo capacity: ");
 		                double cargoCapacity = scanner.nextDouble();
 		                vehicle = new Truck(make, model, year, cargoCapacity);
-		                System.out.print("Motorcycle added successfuly.");
+		                //System.out.print("Motorcycle added successfuly.");
 		            } else {
 		            	vehicle = null;
 		            }
                     
                     if (vehicle != null){
+                    	try {
 	                    vehicle.setLicensePlate(plate);
 	                    rentalSystem.addVehicle(vehicle);
 	                    System.out.print("Vehicle added.");
+	                    }
+                    	catch (IllegalArgumentException e) {
+                            System.out.println("Error: " + e.getMessage());
+                    	}
+	                    
                     }
                     else {
 	                    System.out.print("Vehicle not added.");
