@@ -1,5 +1,9 @@
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.lang.reflect.Constructor;
+
+import java.lang.reflect.Modifier;
+
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -96,5 +100,14 @@ class VehicleRentalTest {
     
     // part 3 -----------------------------------------------
     
-    
+    @Test
+    public void testSingletonRentalSystem() throws Exception {
+        Constructor<RentalSystem> constructor = RentalSystem.class.getDeclaredConstructor();
+        assertTrue(Modifier.isPrivate(constructor.getModifiers()), "Constructor should be private");
+
+        RentalSystem instance = RentalSystem.getInstance();
+        assertNotNull(instance, "Instance should not be null");
+
+        assertSame(instance, RentalSystem.getInstance(), "Should always return same instance");
+    }
 }
