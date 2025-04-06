@@ -14,7 +14,6 @@ import java.util.List;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
@@ -24,8 +23,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.geometry.Pos;
 import javafx.stage.Modality;
 import javafx.geometry.Insets; 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 
 
@@ -66,9 +63,15 @@ public class RentalSystemNewGUI extends Application {
         showAvailableVehiclesButton.setMaxSize(150, 50);
         showAvailableVehiclesButton.setMinSize(150, 50);
         
+        Button showRentalHistoryButton = new Button("Show Rental History");
+        showRentalHistoryButton.setOnAction(e -> showRentalRecords());
+        showRentalHistoryButton.setMaxSize(150, 50);
+        showRentalHistoryButton.setMinSize(150, 50);
+        
         pane.add(addVehicleButton, 0,0);
         pane.add(showAllVehiclesButton, 0,1);
         pane.add(showAvailableVehiclesButton, 0,2);
+        pane.add(showRentalHistoryButton, 0,3);
         pane.setStyle("-fx-background-color: mediumslateblue");
        
         Scene scene = new Scene(pane, 350, 500);
@@ -279,37 +282,21 @@ public class RentalSystemNewGUI extends Application {
     
     private void showRentalRecords()
     {
-    	TableView<Vehicle> tableView = new TableView<Vehicle>();
-
-        TableColumn<Vehicle, String> column1 = new TableColumn<>("License Plate");
-        column1.setCellValueFactory(new PropertyValueFactory<>("licensePlate"));
-
-        TableColumn<Vehicle, String> column2 = new TableColumn<>("Make");
-        column2.setCellValueFactory(new PropertyValueFactory<>("make"));
-        
-        TableColumn<Vehicle, String> column3 = new TableColumn<>("Model");
-        column3.setCellValueFactory(new PropertyValueFactory<>("model"));
-        
-        TableColumn<Vehicle, Number> column4 = new TableColumn<>("Year");
-        column4.setCellValueFactory(new PropertyValueFactory<>("year"));
-        
-        TableColumn<Vehicle, String> column5 = new TableColumn<>("Status");
-        column5.setCellValueFactory(new PropertyValueFactory<>("status"));
-
-        tableView.getColumns().add(column1);
-        tableView.getColumns().add(column2);
-        tableView.getColumns().add(column3);
-        tableView.getColumns().add(column4);
-        tableView.getColumns().add(column5);
-
-        for( Vehicle v : vehicles )
+    	List<RentalRecord> records = rentalHistory.getRentalHistory();
+    	
+    	//using listview as RentalRecords has nested classes and tableView was super complex
+    	//could be improved with tableView
+    	
+    	ListView<String> listView = new ListView<String>();
+       
+        for( RentalRecord r : records )
         {
-        	tableView.getItems().add(v);
+        	listView.getItems().add(r.toString());
         }
         
         final Stage popup = new Stage();
         popup.initModality(Modality.NONE);
-        popup.setTitle("Available Vehicles");
+        popup.setTitle("Rental Records");
         popup.initOwner(primary);
         
         VBox popupVbox = new VBox(50);
@@ -317,11 +304,11 @@ public class RentalSystemNewGUI extends Application {
         close.setOnAction(e -> popup.close());
         
         popupVbox.setAlignment(Pos.CENTER);
-        popupVbox.getChildren().addAll(tableView,close);
+        popupVbox.getChildren().addAll(listView,close);
         popupVbox.setStyle("-fx-background-color: lightblue");
 
        
-        Scene popupScene = new Scene(popupVbox, 400, 450);
+        Scene popupScene = new Scene(popupVbox, 600, 450);
         popup.setScene(popupScene);
         popup.show();
         
