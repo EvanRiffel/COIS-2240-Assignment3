@@ -56,13 +56,19 @@ public class RentalSystemNewGUI extends Application {
         addVehicleButton.setMinSize(150, 50);
 
         
-        Button showVehiclesButton = new Button("Show Vehicles");
-        showVehiclesButton.setOnAction(e -> showVehicles());
-        showVehiclesButton.setMaxSize(150, 50);
-        showVehiclesButton.setMinSize(150, 50);
+        Button showAllVehiclesButton = new Button("Show All Vehicles");
+        showAllVehiclesButton.setOnAction(e -> displayVehicles(false));
+        showAllVehiclesButton.setMaxSize(150, 50);
+        showAllVehiclesButton.setMinSize(150, 50);
+        
+        Button showAvailableVehiclesButton = new Button("Show Available Vehicles");
+        showAvailableVehiclesButton.setOnAction(e -> displayVehicles(true));
+        showAvailableVehiclesButton.setMaxSize(150, 50);
+        showAvailableVehiclesButton.setMinSize(150, 50);
         
         pane.add(addVehicleButton, 0,0);
-        pane.add(showVehiclesButton, 0,1);
+        pane.add(showAllVehiclesButton, 0,1);
+        pane.add(showAvailableVehiclesButton, 0,2);
         pane.setStyle("-fx-background-color: mediumslateblue");
        
         Scene scene = new Scene(pane, 350, 500);
@@ -211,7 +217,67 @@ public class RentalSystemNewGUI extends Application {
         popup.show();
     }
     
-    private void showVehicles()
+    private void displayVehicles(boolean showOnlyAvailable)
+    {
+    	TableView<Vehicle> tableView = new TableView<Vehicle>();
+
+        TableColumn<Vehicle, String> column1 = new TableColumn<>("License Plate");
+        column1.setCellValueFactory(new PropertyValueFactory<>("licensePlate"));
+
+        TableColumn<Vehicle, String> column2 = new TableColumn<>("Make");
+        column2.setCellValueFactory(new PropertyValueFactory<>("make"));
+        
+        TableColumn<Vehicle, String> column3 = new TableColumn<>("Model");
+        column3.setCellValueFactory(new PropertyValueFactory<>("model"));
+        
+        TableColumn<Vehicle, Number> column4 = new TableColumn<>("Year");
+        column4.setCellValueFactory(new PropertyValueFactory<>("year"));
+        
+        TableColumn<Vehicle, String> column5 = new TableColumn<>("Status");
+        column5.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        tableView.getColumns().add(column1);
+        tableView.getColumns().add(column2);
+        tableView.getColumns().add(column3);
+        tableView.getColumns().add(column4);
+        tableView.getColumns().add(column5);
+
+        for( Vehicle v : vehicles )
+        {
+        	if(showOnlyAvailable == true)
+        	{
+        		if( v.getStatus() == Vehicle.VehicleStatus.AVAILABLE)
+        		{
+        			tableView.getItems().add(v);
+        		}
+        	}
+        	else
+        	{
+        		tableView.getItems().add(v);
+        	}
+        }
+        
+        final Stage popup = new Stage();
+        popup.initModality(Modality.NONE);
+        popup.setTitle("Available Vehicles");
+        popup.initOwner(primary);
+        
+        VBox popupVbox = new VBox(50);
+        Button close = new Button("Close");
+        close.setOnAction(e -> popup.close());
+        
+        popupVbox.setAlignment(Pos.CENTER);
+        popupVbox.getChildren().addAll(tableView,close);
+        popupVbox.setStyle("-fx-background-color: lightblue");
+
+       
+        Scene popupScene = new Scene(popupVbox, 400, 450);
+        popup.setScene(popupScene);
+        popup.show();
+        
+    }
+    
+    private void showRentalRecords()
     {
     	TableView<Vehicle> tableView = new TableView<Vehicle>();
 
