@@ -16,6 +16,9 @@ import javafx.application.Application;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.scene.control.TableColumn;
@@ -33,11 +36,16 @@ public class RentalSystemNewGUI extends Application {
 	RentalSystem rentalSystem = RentalSystem.getInstance();
 	GridPane pane;
 	Stage primary;
+    Label statusLabel = new Label("");
+
 
     @Override
     public void start(Stage primaryStage) {
     	primary = primaryStage;
     	loadData();
+    	
+    	statusLabel.setTextFill(Color.WHITE);
+    	statusLabel.setFont(Font.font("Arial", FontWeight.BOLD, 15));
         pane = new GridPane();
         pane.setMinSize(550, 300); 
         pane.setPadding(new Insets(10, 10, 10, 10)); 
@@ -45,7 +53,50 @@ public class RentalSystemNewGUI extends Application {
         pane.setAlignment(Pos.CENTER);
         pane.setVgap(5); 
         pane.setHgap(5); 
+        
+        MenuItem menuItem1 = new MenuItem("Add Vehicle");
+        menuItem1.setOnAction( action -> { addVehicle(); });
+               
+        MenuItem menuItem2 = new MenuItem("Add Customer");
+        menuItem2.setOnAction( action -> { addCustomer(); });
+        
+        Menu menu1 = new Menu("Add");
+        menu1.getItems().add(menuItem1);
+        menu1.getItems().add(menuItem2);
+        
+        MenuItem menuItem3 = new MenuItem("Rent Vehicle");
+        menuItem3.setOnAction( action -> { rentVehicle(); });
+        
+        MenuItem menuItem4 = new MenuItem("Return Vehicle");
+        menuItem4.setOnAction( action -> { returnVehicle(); });
+                
+        Menu menu2 = new Menu("Rentals");
+        menu2.getItems().add(menuItem3);
+        menu2.getItems().add(menuItem4);
+        
+        MenuItem menuItem5 = new MenuItem("All Vehicles");
+        menuItem5.setOnAction( action -> { displayVehicles(false); });
 
+        MenuItem menuItem6 = new MenuItem("Available Vehicles");
+        menuItem6.setOnAction( action -> { displayVehicles(true); });
+        
+        MenuItem menuItem7 = new MenuItem("Customers");
+        menuItem7.setOnAction( action -> { displayCustomers(); });
+        
+        MenuItem menuItem8 = new MenuItem("Rental Records");
+        menuItem8.setOnAction( action -> { showRentalRecords(); });
+
+        Menu menu3 = new Menu("Show");
+        menu3.getItems().add(menuItem5);
+        menu3.getItems().add(menuItem6);
+        menu3.getItems().add(menuItem7);
+        menu3.getItems().add(menuItem8);
+        
+        MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().add(menu1);
+        menuBar.getMenus().add(menu2);
+        menuBar.getMenus().add(menu3);
+        
         Button addVehicleButton = new Button("Add Vehicle");
         addVehicleButton.setOnAction(e -> addVehicle());
         addVehicleButton.setMaxSize(150, 50);
@@ -81,17 +132,30 @@ public class RentalSystemNewGUI extends Application {
         showRentButton.setMaxSize(150, 50);
         showRentButton.setMinSize(150, 50);
         
-        pane.add(addCustomerButton, 0, 0);
-        pane.add(showCustomersButton, 1, 0);
-        pane.add(addVehicleButton, 0,1);
-        pane.add(showAllVehiclesButton, 1,1);
-        pane.add(showAvailableVehiclesButton, 2,1);
-        pane.add(showRentButton, 0, 2);
-        pane.add(showRentalHistoryButton, 2,2);
+        Button showReturnButton = new Button("Return Vehicle");
+        showReturnButton.setOnAction(e -> returnVehicle());
+        showReturnButton.setMaxSize(150, 50);
+        showReturnButton.setMinSize(150, 50);
+        
+        pane.add(menuBar, 0, 0);
+        
+        pane.add(addCustomerButton, 0, 1);
+        pane.add(showCustomersButton, 1, 1);
+        pane.add(addVehicleButton, 0,2);
+        pane.add(showAllVehiclesButton, 1,2);
+        pane.add(showAvailableVehiclesButton, 2,2);
+        pane.add(showRentButton, 0, 3);
+        pane.add(showReturnButton, 1, 3);
+        pane.add(showRentalHistoryButton, 2,3);
+        pane.add(statusLabel, 1,4,2, 1);
+        
         
         pane.setStyle("-fx-background-color: mediumslateblue");
-       
-        Scene scene = new Scene(pane, 550, 300);
+        
+        VBox vBox = new VBox(menuBar,pane);
+        Scene scene = new Scene(vBox, 550, 300);
+
+        
         primaryStage.setTitle("Rental System GUI");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -102,6 +166,8 @@ public class RentalSystemNewGUI extends Application {
     }
     
     public void addVehicle() { 
+    	
+    	statusLabel.setText("");
         final Stage popup = new Stage();
 
         Label featureLabel = new Label("");
@@ -178,6 +244,7 @@ public class RentalSystemNewGUI extends Application {
 	        			v.setLicensePlate(license.getText());
 	        			if( rentalSystem.addVehicle(v)) {
 	        		    	loadData();
+	        		        statusLabel.setText("Vehicle Added!");
 	        				popup.close();
 	        			}
 	        			else {
@@ -240,6 +307,7 @@ public class RentalSystemNewGUI extends Application {
     
     public void addCustomer() { 
     	
+    	statusLabel.setText("");
         final Stage popup = new Stage();
 
         Label errorLabel = new Label("");
@@ -260,6 +328,7 @@ public class RentalSystemNewGUI extends Application {
         	        c = new Customer(idNumber, name.getText());
         	        if(c != null) {
 	        			if( rentalSystem.addCustomer(c)) {
+	        				statusLabel.setText("Customer Added!");
 	        		    	loadData();
 	        				popup.close();
 	        			}
@@ -317,6 +386,7 @@ public class RentalSystemNewGUI extends Application {
     
 public void rentVehicle() { 
     	
+		statusLabel.setText("");
         final Stage popup = new Stage();
 
         Label errorLabel = new Label("");
@@ -334,12 +404,10 @@ public void rentVehicle() {
         	{
         		try {
             		double amountInDollars = Double.parseDouble(amount.getText());
-            		//rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount)
-            		
-            		
             		Vehicle v = vehicleTableView.getSelectionModel().getSelectedItem();
             		Customer c = customerTableView.getSelectionModel().getSelectedItem();
             		rentalSystem.rentVehicle(v, c, LocalDate.now(), amountInDollars);
+            		statusLabel.setText("Vehicle Rented!");
             		loadData();
             		popup.close();
             		
@@ -363,7 +431,7 @@ public void rentVehicle() {
         });
         
         popup.initModality(Modality.NONE);
-        popup.setTitle("Add Customer");
+        popup.setTitle("Rent Vehicle");
         popup.initOwner(primary);
         
         GridPane popupGridPane = new GridPane();
@@ -391,6 +459,85 @@ public void rentVehicle() {
         popup.show();
     }
 
+	public void returnVehicle() { 
+		
+		statusLabel.setText("");
+	    final Stage popup = new Stage();
+	
+	    Label errorLabel = new Label("");
+		Label amountLabel = new Label("Return Fees");
+	    TextField amount = new TextField();
+	    
+	    //get all vehicles into a table view
+	    TableView<Vehicle> vehicleTableView = getVehicleTableView(false);
+	    //eliminate the ones that dont have RENTED status
+		vehicleTableView.getItems().removeIf(element -> element.getStatus() != Vehicle.VehicleStatus.RENTED);
+
+	    TableView<Customer> customerTableView = getCustomerTableView();
+	
+		Button returnVehicle = new Button("Return Vehicle");
+	    returnVehicle.setOnAction(e -> {
+	    	errorLabel.setText("");
+	    	if(!amount.getText().isEmpty() && 
+	    		!vehicleTableView.getSelectionModel().isEmpty() &&
+	    		!customerTableView.getSelectionModel().isEmpty())
+	    	{
+	    		try {
+	        		double amountInDollars = Double.parseDouble(amount.getText());
+	        		Vehicle v = vehicleTableView.getSelectionModel().getSelectedItem();
+	        		Customer c = customerTableView.getSelectionModel().getSelectedItem();
+	        		rentalSystem.returnVehicle(v, c, LocalDate.now(), amountInDollars);
+	        		statusLabel.setText("Vehicle Returned!");
+	        		loadData();
+	        		popup.close();
+	        		
+	    		}
+	            catch (NumberFormatException ex){
+		            errorLabel.setText("Amount is not a number!");
+		        }
+	    	}
+	    	else
+	    	{
+	    		errorLabel.setText("Error renting vehicle - Please fill in an amount and select a customer and vehicle");
+	    	}
+	
+	    	
+	    });
+	    Button close = new Button("Close");
+	    close.setOnAction(e -> {
+	    	
+	    	popup.close();
+	    	
+	    });
+	    
+	    popup.initModality(Modality.NONE);
+	    popup.setTitle("Return Vehicle");
+	    popup.initOwner(primary);
+	    
+	    GridPane popupGridPane = new GridPane();
+	    popupGridPane.setMinSize(500, 600); 
+	    popupGridPane.setPadding(new Insets(10, 10, 10, 10)); 
+	
+	
+	    popupGridPane.setAlignment(Pos.CENTER);
+	    popupGridPane.setVgap(5); 
+	    popupGridPane.setHgap(5); 
+	    popupGridPane.setStyle("-fx-background-color: lightblue");
+	    
+	    popupGridPane.add(vehicleTableView, 0, 0, 2, 1);
+	    popupGridPane.add(customerTableView, 0,1, 2, 1);
+	    popupGridPane.add(amountLabel,0,2);
+	    popupGridPane.add(amount,1,2);
+	    popupGridPane.add(returnVehicle, 0, 3);
+	    popupGridPane.add(close,1,3);
+	    popupGridPane.add(errorLabel, 0, 4, 2, 2);
+	
+	
+	
+	    Scene popupScene = new Scene(popupGridPane, 500, 550);
+	    popup.setScene(popupScene);
+	    popup.show();
+	}
 
 	private TableView<Vehicle> getVehicleTableView(boolean showOnlyAvailable)
 	{
@@ -446,6 +593,7 @@ public void rentVehicle() {
     
     private void displayVehicles(boolean showOnlyAvailable)
     {
+    	statusLabel.setText("");
     	TableView<Vehicle> tableView = getVehicleTableView(showOnlyAvailable);
         
         final Stage popup = new Stage();
@@ -490,6 +638,7 @@ public void rentVehicle() {
     
     private void displayCustomers()
     {
+    	statusLabel.setText("");
         TableView<Customer> tableView = getCustomerTableView();
         
         final Stage popup = new Stage();
@@ -514,6 +663,7 @@ public void rentVehicle() {
     
     private void showRentalRecords()
     {
+    	statusLabel.setText("");
     	List<RentalRecord> records = rentalHistory.getRentalHistory();
     	
     	//using listview as RentalRecords has nested classes and using tableView was super complex
@@ -563,7 +713,7 @@ public void rentVehicle() {
 	            String line;
 	            //loops through each line of the file until a null line, aka empty line
 	            while ((line = reader.readLine()) != null) {
-	// chunk the line up via the the |, which separates the values in the text files
+	            	// chunk the line up via the the |, which separates the values in the text files
 	                //String[] parts = line.split(" \\| ");
 	            	System.out.println(line);
 	            	String[] parts = line.split("\\| ");

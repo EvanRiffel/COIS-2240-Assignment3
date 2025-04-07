@@ -1,2 +1,3 @@
 EEE333 | Honda  | Civic | 2021 | AVAILABLE | Seats: 4
 EEE444 | Toyota | Corolla | 2020 | AVAILABLE | Seats: 4
+ABC123 | Mazda | Crx | 2022 | AVAILABLE | Sidecar: Yes
