@@ -2,29 +2,28 @@ package application;
 
 
 import java.io.BufferedReader;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
+
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.geometry.Pos;
 import javafx.stage.Modality;
 import javafx.geometry.Insets; 
-
-
 
 public class RentalSystemNewGUI extends Application {
 	
@@ -40,7 +39,7 @@ public class RentalSystemNewGUI extends Application {
     	primary = primaryStage;
     	loadData();
         pane = new GridPane();
-        pane.setMinSize(350, 500); 
+        pane.setMinSize(550, 300); 
         pane.setPadding(new Insets(10, 10, 10, 10)); 
 
         pane.setAlignment(Pos.CENTER);
@@ -52,6 +51,10 @@ public class RentalSystemNewGUI extends Application {
         addVehicleButton.setMaxSize(150, 50);
         addVehicleButton.setMinSize(150, 50);
 
+        Button addCustomerButton = new Button("Add Customer");
+        addCustomerButton.setOnAction(e -> addCustomer());
+        addCustomerButton.setMaxSize(150, 50);
+        addCustomerButton.setMinSize(150, 50);
         
         Button showAllVehiclesButton = new Button("Show All Vehicles");
         showAllVehiclesButton.setOnAction(e -> displayVehicles(false));
@@ -68,13 +71,21 @@ public class RentalSystemNewGUI extends Application {
         showRentalHistoryButton.setMaxSize(150, 50);
         showRentalHistoryButton.setMinSize(150, 50);
         
-        pane.add(addVehicleButton, 0,0);
-        pane.add(showAllVehiclesButton, 0,1);
-        pane.add(showAvailableVehiclesButton, 0,2);
-        pane.add(showRentalHistoryButton, 0,3);
+        Button showCustomersButton = new Button("Show Customers");
+        showCustomersButton.setOnAction(e -> displayCustomers());
+        showCustomersButton.setMaxSize(150, 50);
+        showCustomersButton.setMinSize(150, 50);
+        
+        pane.add(addCustomerButton, 0, 0);
+        pane.add(showCustomersButton, 1, 0);
+        pane.add(addVehicleButton, 0,1);
+        pane.add(showAllVehiclesButton, 1,1);
+        pane.add(showAvailableVehiclesButton, 2,1);
+        pane.add(showRentalHistoryButton, 2,2);
+        
         pane.setStyle("-fx-background-color: mediumslateblue");
        
-        Scene scene = new Scene(pane, 350, 500);
+        Scene scene = new Scene(pane, 550, 300);
         primaryStage.setTitle("Rental System GUI");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -85,13 +96,11 @@ public class RentalSystemNewGUI extends Application {
     }
     
     public void addVehicle() { 
-    	System.out.println("AddVehicle");
         final Stage popup = new Stage();
 
         Label featureLabel = new Label("");
         TextField feature = new TextField();
         Label errorLabel = new Label("");
-
         
     	ComboBox<String> comboBox = new ComboBox<String>();
 
@@ -128,7 +137,6 @@ public class RentalSystemNewGUI extends Application {
         TextField model = new TextField();
     	Label yearLabel = new Label("Year");
         TextField year = new TextField();
-    	
        
         Button add = new Button("Add Vehicle");
         add.setOnAction(e -> {
@@ -175,6 +183,10 @@ public class RentalSystemNewGUI extends Application {
     	            errorLabel.setText("Year or Feature is not a number!");
     	        }
         	}
+        	else
+        	{
+        		errorLabel.setText("Error adding vehicle - Please fill all feilds");
+        	}
 
         	
         });
@@ -213,7 +225,84 @@ public class RentalSystemNewGUI extends Application {
         popupGridPane.add(feature,1,5);
         popupGridPane.add(add,0,6);
         popupGridPane.add(close,1,6);
-        popupGridPane.add(errorLabel, 0, 7, 1, 7);
+        popupGridPane.add(errorLabel, 0, 7, 2, 1);
+
+        Scene popupScene = new Scene(popupGridPane, 400, 450);
+        popup.setScene(popupScene);
+        popup.show();
+    }
+    
+    public void addCustomer() { 
+    	
+        final Stage popup = new Stage();
+
+        Label errorLabel = new Label("");
+    	Label idLabel = new Label("Customer ID");
+        TextField id = new TextField();
+    	Label nameLabel = new Label("Name");
+        TextField name = new TextField();
+    
+    	Button add = new Button("Add Customer");
+        add.setOnAction(e -> {
+        	errorLabel.setText("");
+        	if(!id.getText().isEmpty() && 
+        		!name.getText().isEmpty())
+        	{
+        		try {
+            		int idNumber = Integer.parseInt(id.getText());
+        	        Customer c = null;
+        	        c = new Customer(idNumber, name.getText());
+        	        if(c != null) {
+	        			if( rentalSystem.addCustomer(c)) {
+	        		    	loadData();
+	        				popup.close();
+	        			}
+	        			else {
+	        				errorLabel.setText("Error adding customer - customer id already used");
+	        			}
+	        		}
+        		}
+                catch (NumberFormatException ex){
+    	            errorLabel.setText("Customer id is not a number!");
+    	        }
+        	}
+        	else
+        	{
+        		errorLabel.setText("Error adding customer - Please fill all fields");
+        	}
+
+        	
+        });
+        Button close = new Button("Close");
+        close.setOnAction(e -> {
+        	
+        	popup.close();
+        	
+        });
+        
+        popup.initModality(Modality.NONE);
+        popup.setTitle("Add Customer");
+        popup.initOwner(primary);
+        
+        GridPane popupGridPane = new GridPane();
+        popupGridPane.setMinSize(500, 600); 
+        popupGridPane.setPadding(new Insets(10, 10, 10, 10)); 
+
+
+        popupGridPane.setAlignment(Pos.CENTER);
+        popupGridPane.setVgap(5); 
+        popupGridPane.setHgap(5); 
+        popupGridPane.setStyle("-fx-background-color: lightblue");
+        
+        popupGridPane.add(idLabel,0,0);
+        popupGridPane.add(id,1,0);
+        popupGridPane.add(nameLabel,0,1);
+        popupGridPane.add(name,1,1);
+        popupGridPane.add(add,0,2);
+        popupGridPane.add(close,1,2);
+        popupGridPane.add(errorLabel, 0, 3, 2, 1);
+
+
 
         Scene popupScene = new Scene(popupGridPane, 400, 450);
         popup.setScene(popupScene);
@@ -280,11 +369,50 @@ public class RentalSystemNewGUI extends Application {
         
     }
     
+    private void displayCustomers()
+    {
+        
+    	TableView<Customer> tableView = new TableView<Customer>();
+
+        TableColumn<Customer, Number> column1 = new TableColumn<>("Customer ID");
+        column1.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+
+        TableColumn<Customer, String> column2 = new TableColumn<>("Name");
+        column2.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        
+        tableView.getColumns().add(column1);
+        tableView.getColumns().add(column2);
+      
+        for( Customer c : customers )
+        {
+        	tableView.getItems().add(c);
+        }
+        
+        final Stage popup = new Stage();
+        popup.initModality(Modality.NONE);
+        popup.setTitle("Current Customers");
+        popup.initOwner(primary);
+        
+        VBox popupVbox = new VBox(50);
+        Button close = new Button("Close");
+        close.setOnAction(e -> popup.close());
+        
+        popupVbox.setAlignment(Pos.CENTER);
+        popupVbox.getChildren().addAll(tableView,close);
+        popupVbox.setStyle("-fx-background-color: lightblue");
+
+       
+        Scene popupScene = new Scene(popupVbox, 400, 450);
+        popup.setScene(popupScene);
+        popup.show();
+        
+    }
+    
     private void showRentalRecords()
     {
     	List<RentalRecord> records = rentalHistory.getRentalHistory();
     	
-    	//using listview as RentalRecords has nested classes and tableView was super complex
+    	//using listview as RentalRecords has nested classes and using tableView was super complex
     	//could be improved with tableView
     	
     	ListView<String> listView = new ListView<String>();
