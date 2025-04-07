@@ -76,11 +76,17 @@ public class RentalSystemNewGUI extends Application {
         showCustomersButton.setMaxSize(150, 50);
         showCustomersButton.setMinSize(150, 50);
         
+        Button showRentButton = new Button("Rent Vehicle");
+        showRentButton.setOnAction(e -> rentVehicle());
+        showRentButton.setMaxSize(150, 50);
+        showRentButton.setMinSize(150, 50);
+        
         pane.add(addCustomerButton, 0, 0);
         pane.add(showCustomersButton, 1, 0);
         pane.add(addVehicleButton, 0,1);
         pane.add(showAllVehiclesButton, 1,1);
         pane.add(showAvailableVehiclesButton, 2,1);
+        pane.add(showRentButton, 0, 2);
         pane.add(showRentalHistoryButton, 2,2);
         
         pane.setStyle("-fx-background-color: mediumslateblue");
@@ -304,14 +310,91 @@ public class RentalSystemNewGUI extends Application {
 
 
 
-        Scene popupScene = new Scene(popupGridPane, 400, 450);
+        Scene popupScene = new Scene(popupGridPane, 500, 550);
         popup.setScene(popupScene);
         popup.show();
     }
     
-    private void displayVehicles(boolean showOnlyAvailable)
-    {
-    	TableView<Vehicle> tableView = new TableView<Vehicle>();
+public void rentVehicle() { 
+    	
+        final Stage popup = new Stage();
+
+        Label errorLabel = new Label("");
+    	Label amountLabel = new Label("Rental Amount");
+        TextField amount = new TextField();
+        TableView<Vehicle> vehicleTableView = getVehicleTableView(true);
+        TableView<Customer> customerTableView = getCustomerTableView();
+    
+    	Button rent = new Button("Rent Vehicle");
+        rent.setOnAction(e -> {
+        	errorLabel.setText("");
+        	if(!amount.getText().isEmpty() && 
+        		!vehicleTableView.getSelectionModel().isEmpty() &&
+        		!customerTableView.getSelectionModel().isEmpty())
+        	{
+        		try {
+            		double amountInDollars = Double.parseDouble(amount.getText());
+            		//rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount)
+            		
+            		
+            		Vehicle v = vehicleTableView.getSelectionModel().getSelectedItem();
+            		Customer c = customerTableView.getSelectionModel().getSelectedItem();
+            		rentalSystem.rentVehicle(v, c, LocalDate.now(), amountInDollars);
+            		loadData();
+            		popup.close();
+            		
+        		}
+                catch (NumberFormatException ex){
+    	            errorLabel.setText("Amount is not a number!");
+    	        }
+        	}
+        	else
+        	{
+        		errorLabel.setText("Error renting vehicle - Please fill in an amount and select a customer and vehicle");
+        	}
+
+        	
+        });
+        Button close = new Button("Close");
+        close.setOnAction(e -> {
+        	
+        	popup.close();
+        	
+        });
+        
+        popup.initModality(Modality.NONE);
+        popup.setTitle("Add Customer");
+        popup.initOwner(primary);
+        
+        GridPane popupGridPane = new GridPane();
+        popupGridPane.setMinSize(500, 600); 
+        popupGridPane.setPadding(new Insets(10, 10, 10, 10)); 
+
+
+        popupGridPane.setAlignment(Pos.CENTER);
+        popupGridPane.setVgap(5); 
+        popupGridPane.setHgap(5); 
+        popupGridPane.setStyle("-fx-background-color: lightblue");
+        
+        popupGridPane.add(vehicleTableView, 0, 0, 2, 1);
+        popupGridPane.add(customerTableView, 0,1, 2, 1);
+        popupGridPane.add(amountLabel,0,2);
+        popupGridPane.add(amount,1,2);
+        popupGridPane.add(rent, 0, 3);
+        popupGridPane.add(close,1,3);
+        popupGridPane.add(errorLabel, 0, 4, 2, 2);
+
+
+
+        Scene popupScene = new Scene(popupGridPane, 500, 550);
+        popup.setScene(popupScene);
+        popup.show();
+    }
+
+
+	private TableView<Vehicle> getVehicleTableView(boolean showOnlyAvailable)
+	{
+		TableView<Vehicle> tableView = new TableView<Vehicle>();
 
         TableColumn<Vehicle, String> column1 = new TableColumn<>("License Plate");
         column1.setCellValueFactory(new PropertyValueFactory<>("licensePlate"));
@@ -338,16 +421,32 @@ public class RentalSystemNewGUI extends Application {
         {
         	if(showOnlyAvailable == true)
         	{
-        		if( v.getStatus() == Vehicle.VehicleStatus.AVAILABLE)
-        		{
+        		if( v.getStatus() == Vehicle.VehicleStatus.AVAILABLE) {
         			tableView.getItems().add(v);
+        		}
+        		//remove previously added vehicle if it now shows as rented.  This is fixing a bug 
+        		//in saveVehicle which only uses append
+        		else {
+        			tableView.getItems().removeIf(element -> element.getLicensePlate().equals(v.getLicensePlate()));
         		}
         	}
         	else
         	{
+        		//only show the most recent entry for a vehicle
+        		//fixes a bug in saveVehicle which only uses append
+    			tableView.getItems().removeIf(element -> element.getLicensePlate().equals(v.getLicensePlate()));
         		tableView.getItems().add(v);
+        		
+        		
         	}
+        	//get rid of duplicate entries
         }
+        return tableView;
+	}
+    
+    private void displayVehicles(boolean showOnlyAvailable)
+    {
+    	TableView<Vehicle> tableView = getVehicleTableView(showOnlyAvailable);
         
         final Stage popup = new Stage();
         popup.initModality(Modality.NONE);
@@ -369,9 +468,8 @@ public class RentalSystemNewGUI extends Application {
         
     }
     
-    private void displayCustomers()
+    private TableView<Customer> getCustomerTableView()
     {
-        
     	TableView<Customer> tableView = new TableView<Customer>();
 
         TableColumn<Customer, Number> column1 = new TableColumn<>("Customer ID");
@@ -387,6 +485,12 @@ public class RentalSystemNewGUI extends Application {
         {
         	tableView.getItems().add(c);
         }
+        return tableView;
+    }
+    
+    private void displayCustomers()
+    {
+        TableView<Customer> tableView = getCustomerTableView();
         
         final Stage popup = new Stage();
         popup.initModality(Modality.NONE);
